@@ -1,9 +1,11 @@
+import keyboard._keyboard_event
 import pandas as pd
-import sched
 import speedtest as st
+import keyboard
+import sched
 import time
 
-DELAY_TIME = int(1)
+DELAY_TIME = int(3)
 download = []
 upload = []
 ping = []
@@ -14,13 +16,19 @@ scheduler = sched.scheduler(time.time, time.sleep)
 st_download = stest.download()
 st_upload = stest.upload()
 st_ping = stest.results.ping
-stest.get_best_server()
 
-#! FUNÇÃO PARA USAR NOS TESTES
-def df_all_results():
-    all_results = stest.results.dict()
-    all_results_pd = pd.DataFrame(all_results)
-    return all_results_pd
+
+def df_servers_list():
+    servers_list = stest.get_servers()
+    all_servers_list = pd.DataFrame(servers_list)
+    return all_servers_list
+
+def best_server():
+    best = stest.get_best_server()
+
+    scheduler.enter(DELAY_TIME, 0, best_server)
+
+    return f"Best server: {best['host']} | {best['country']}"
 
 def connection_speed():
     '''Collect internet speed data'''
@@ -33,17 +41,26 @@ def connection_speed():
 
     print(f"Next test will execute in {DELAY_TIME}.")
 
-    scheduler.enter(DELAY_TIME, 0, connection_speed)
+    scheduler.enter(DELAY_TIME, 1, connection_speed)
 
 def df_connection_speed():
+    connection_speed()
     data = {'Download': download, 'Upload': upload, 'Ping': ping}
     df_data = pd.DataFrame(data, columns=['Download', 'Upload', 'Ping'])
 
-    scheduler.enter(DELAY_TIME, 1, df_connection_speed)
+    scheduler.enter(DELAY_TIME, 2, df_connection_speed)
 
     return df_data
 
-
+best_server()
 connection_speed()
-#print(df_all_results())
-print(df_connection_speed())
+df_connection_speed()
+
+try:
+    scheduler.run(blocking=True)
+    if keyboard._keyboard_event():
+        raise KeyboardInterrupt
+    
+    time.sleep(0.5)
+except:
+    print("Exiting program")
