@@ -1,6 +1,6 @@
-import keyboard._keyboard_event
 import pandas as pd
 import speedtest as st
+#import matplotlib as plot
 import keyboard
 import sched
 import time
@@ -13,8 +13,6 @@ ping = []
 stest = st.Speedtest()
 scheduler = sched.scheduler(time.time, time.sleep)
 
-st_download = stest.download()
-st_upload = stest.upload()
 st_ping = stest.results.ping
 
 
@@ -26,9 +24,9 @@ def df_servers_list():
 def best_server():
     best = stest.get_best_server()
 
-    scheduler.enter(DELAY_TIME, 0, best_server)
+    print(f"Best server: {best['host']} | {best['country']}")
 
-    return f"Best server: {best['host']} | {best['country']}"
+    scheduler.enter(DELAY_TIME, 0, best_server)
 
 def connection_speed():
     '''Collect internet speed data'''
@@ -39,28 +37,22 @@ def connection_speed():
     upload.append(temp_upload)
     ping.append(st_ping)
 
-    print(f"Next test will execute in {DELAY_TIME}.")
-
-    scheduler.enter(DELAY_TIME, 1, connection_speed)
-
 def df_connection_speed():
     connection_speed()
     data = {'Download': download, 'Upload': upload, 'Ping': ping}
-    df_data = pd.DataFrame(data, columns=['Download', 'Upload', 'Ping'])
+    df_data = pd.DataFrame(data, columns=['Download(mbs)', 'Upload(mbs)', 'Ping(mbs)'])
 
-    scheduler.enter(DELAY_TIME, 2, df_connection_speed)
+    print(f"{df_data}")
 
-    return df_data
+    scheduler.enter(DELAY_TIME, 1, df_connection_speed)
 
 best_server()
-connection_speed()
 df_connection_speed()
 
 try:
     scheduler.run(blocking=True)
-    if keyboard._keyboard_event():
+    if keyboard.is_pressed('q') is True:    
         raise KeyboardInterrupt
-    
     time.sleep(0.5)
-except:
+except KeyboardInterrupt:
     print("Exiting program")
