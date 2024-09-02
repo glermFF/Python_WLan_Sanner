@@ -1,0 +1,1 @@
+from .wifi_speed_test import connection_speed, df_connection_speed
