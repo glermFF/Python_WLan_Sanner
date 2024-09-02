@@ -1,66 +1,43 @@
-import keyboard._keyboard_event
 import pandas as pd
 import speedtest as st
-import keyboard
-import sched
+#import matplotlib as plot
 import time
 
-DELAY_TIME = int(3)
 download = []
 upload = []
 ping = []
 
 stest = st.Speedtest()
-scheduler = sched.scheduler(time.time, time.sleep)
-
-st_download = stest.download()
-st_upload = stest.upload()
-st_ping = stest.results.ping
-
-
-def df_servers_list():
-    servers_list = stest.get_servers()
-    all_servers_list = pd.DataFrame(servers_list)
-    return all_servers_list
 
 def best_server():
     best = stest.get_best_server()
 
-    scheduler.enter(DELAY_TIME, 0, best_server)
-
-    return f"Best server: {best['host']} | {best['country']}"
+    return f"{best['host']} | {best['country']}"
 
 def connection_speed():
     '''Collect internet speed data'''
     temp_download = '{:.2f}'.format(stest.download() / 10 ** 6)
     temp_upload = '{:.2f}'.format(stest.upload() / 10 ** 6)
+    st_ping = '{:.2f}'.format(stest.results.ping)
+    server = best_server()
 
     download.append(temp_download)
     upload.append(temp_upload)
     ping.append(st_ping)
 
-    print(f"Next test will execute in {DELAY_TIME}.")
-
-    scheduler.enter(DELAY_TIME, 1, connection_speed)
+    print(f"Download: {temp_download} Mbps, Upload: {temp_upload} Mbps, Ping: {st_ping} ms, Server: {server}")
 
 def df_connection_speed():
-    connection_speed()
-    data = {'Download': download, 'Upload': upload, 'Ping': ping}
-    df_data = pd.DataFrame(data, columns=['Download', 'Upload', 'Ping'])
+    data = {'Download(mbs)': download, 'Upload(mbs)': upload, 'Ping(mbs)': ping}
+    df_data = pd.DataFrame(data)
 
-    scheduler.enter(DELAY_TIME, 2, df_connection_speed)
+    print(f"{df_data}")
 
-    return df_data
 
-best_server()
-connection_speed()
-df_connection_speed()
-
-try:
-    scheduler.run(blocking=True)
-    if keyboard._keyboard_event():
-        raise KeyboardInterrupt
-    
-    time.sleep(0.5)
-except:
-    print("Exiting program")
+while True:
+    try:
+        connection_speed()
+    except KeyboardInterrupt:
+        print("Dados finais coletados")
+        df_connection_speed()
+        break
