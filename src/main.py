@@ -1,4 +1,7 @@
+from gui.app_window import main_page
 import app.wifi_speed_test
+import flet 
+
 
 while True:
     try:
