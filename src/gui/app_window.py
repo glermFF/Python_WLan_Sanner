@@ -3,17 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
-
-vect = [27, 48, 36, 47, 50]
-tests = [1,2,3,4,5]
-
 def show_graph():
     connection_speed()
 
     ax.clear()
-
-    testes = np.array(tests)
 
     ax.set_title("Velocidade - Download")
     ax.set_ylabel("velociade(mbps)")

@@ -35,10 +35,12 @@ def connection_speed():
 
         x += 1
 
+    print("done")
+
     #print(f"Download: {temp_download} Mbps, Upload: {temp_upload} Mbps, Ping: {st_ping} ms, Server: {server}, Data do teste: {day}")
 
 def df_connection_speed():
     data = {'Download(mbs)': download, 'Upload(mbs)': upload, 'Ping(mbs)': ping, 'Date': date}
     df_data = pd.DataFrame(data)
 
-    print(f"{df_data}")
+    return df_data

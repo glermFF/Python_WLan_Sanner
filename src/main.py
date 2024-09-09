@@ -1,30 +1,25 @@
 #from gui.app_window import main_page
 import customtkinter as ctk
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import app.wifi_speed_test as wifi
 from app.wifi_speed_test import *
 
 
-tests = [1,2,3,4,5]
-
 def show_graph():
     connection_speed()
+    data_frame = df_connection_speed()
 
     ax.clear()
 
-    testes = np.array(tests)
+    #Graph 1
+    y = data_frame["Download(mbs)"]
 
-    ax.set_title("Velocidade - Download")
-    ax.set_ylabel("velociade(mbps)")
+    ax.set_ylabel("Velociade(mbps)")
     ax.set_xlabel("Teste")
 
-    ax.set_yscale("linear")
-    ax.xaxis.set_major_formatter(mticker.StrMethodFormatter('{x:.0f}')) 
-
-    ax.plot(testes, wifi.download, label='Download', marker='.', linestyle="-", color="purple")
+    ax.plot(y,  marker='.', linestyle="--", color="purple")
+    ax.grid()
 
     canvas.draw()
 
@@ -42,13 +37,13 @@ fig, ax = plt.subplots()
 canvas = FigureCanvasTkAgg(fig)
 canvas.get_tk_widget().pack(pady=(25,0))
 
-frame = ctk.CTkFrame(page, height=420, fg_color="transparent")
-frame.pack(pady=(20,0))
+main_frame = ctk.CTkFrame(page, fg_color="transparent", corner_radius=3)
+main_frame.pack(anchor="center",pady=(35,0),padx=40 ,ipadx=10, ipady=20)
 
-do_test = ctk.CTkButton(frame, text="Test", command=show_graph)
-do_test.pack(padx=20, pady=(10,0), side="left")
+do_test = ctk.CTkButton(main_frame, text="Test", fg_color="black", width=40, corner_radius=5, command=show_graph)
+do_test.pack(padx=40, pady=(0,0), side="left")
 
-graph_file = ctk.CTkButton(frame, text="Save Graph", command=save_graph)
-graph_file.pack(padx=20, pady=(10, 0), side="left")
+graph_file = ctk.CTkButton(main_frame, text="Save Graph", fg_color="black", width=40, corner_radius=5, command=save_graph)
+graph_file.pack(padx=20, pady=(0, 0), side="right")
 
 page.mainloop()
