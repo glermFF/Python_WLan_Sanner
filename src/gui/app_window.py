@@ -1,21 +1,42 @@
-import flet as ft
+import customtkinter as ctk
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+def show_graph():
+    connection_speed()
+
+    ax.clear()
+
+    ax.set_title("Velocidade - Download")
+    ax.set_ylabel("velociade(mbps)")
+    ax.set_xlabel("Teste")
+
+    ax.plot(testes, wifi.download, label='Download', marker='.', linestyle="-", color="purple")
+
+    canvas.draw()
 
 
-def main_page(page:ft.Page):
-    page.window.height = 650
-    page.window.width = 800
-    page.title = "Wifi Speed Test"
-    page.horizontal_alignment = ft.MainAxisAlignment.START
+def save_graph():
+    pass
 
-    frame = ft.Container(
-            margin=0,
-            padding=0,
-            height=630,
-            width=200,
-            bgcolor="grey",
-            border_radius=10
-    )
+page = ctk.CTk()
+page.geometry("840x640")
+page.title("Wifi Speed Test")
+page.grid_columnconfigure(0, weight=1)
 
-    page.add(frame)
+fig, ax = plt.subplots()
 
-ft.app(main_page)
+canvas = FigureCanvasTkAgg(fig)
+canvas.get_tk_widget().pack(pady=(25,0))
+
+frame = ctk.CTkFrame(page, height=420, fg_color="transparent")
+frame.pack(pady=(20,0))
+
+do_test = ctk.CTkButton(frame, text="Test", command=show_graph)
+do_test.pack(padx=20, pady=(10,0), side="left")
+
+graph_file = ctk.CTkButton(frame, text="Save Graph", command=save_graph)
+graph_file.pack(padx=20, pady=(10, 0), side="left")
+
+page.mainloop()
