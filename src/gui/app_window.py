@@ -1,42 +1,50 @@
-import customtkinter as ctk
-import matplotlib.pyplot as plt
-import numpy as np
+from customtkinter import *
+from app.wifi_speed_test import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import numpy as np
 
-def show_graph():
-    connection_speed()
+class AppWindow:
 
-    ax.clear()
+    def __init__(self) -> None:
+        self.page = CTk()
+        self.page.geometry("840x640")
+        self.page.title("Wifi Speed Test")
+        self.page.grid_columnconfigure(0, weight=1)
 
-    ax.set_title("Velocidade - Download")
-    ax.set_ylabel("velociade(mbps)")
-    ax.set_xlabel("Teste")
+        fig = Figure(figsize=(4.5, 4.5), facecolor="#f5ffff")
+        self.ax = fig.add_subplot()
 
-    ax.plot(testes, wifi.download, label='Download', marker='.', linestyle="-", color="purple")
+        self.canvas = FigureCanvasTkAgg(fig)
+        self.canvas.get_tk_widget().pack(pady=(35,0))
 
-    canvas.draw()
+        self.main_frame = CTkFrame(self.page, fg_color="transparent", corner_radius=3)
+        self.main_frame.pack(anchor="center",pady=(35,0),padx=40 ,ipadx=10, ipady=20)
 
+        self.do_test = CTkButton(self.main_frame, text="Test", fg_color="black", width=40, corner_radius=5, command=self.show_graph) #
+        self.do_test.pack(padx=40, pady=(0,0), side="left")
 
-def save_graph():
-    pass
+        self.graph_file = CTkButton(self.main_frame, text="Save Graph", fg_color="black", width=40, corner_radius=5) #command=save_graph
+        self.graph_file.pack(padx=20, pady=(0, 0), side="right")
 
-page = ctk.CTk()
-page.geometry("840x640")
-page.title("Wifi Speed Test")
-page.grid_columnconfigure(0, weight=1)
+        self.page.mainloop()
 
-fig, ax = plt.subplots()
+    def show_graph(self):
+        connection_speed()
+        data_frame = df_connection_speed()
 
-canvas = FigureCanvasTkAgg(fig)
-canvas.get_tk_widget().pack(pady=(25,0))
+        self.ax.clear()
 
-frame = ctk.CTkFrame(page, height=420, fg_color="transparent")
-frame.pack(pady=(20,0))
+        #Graph 1
+        x = np.array([1,2,3,4,5])
+        y = data_frame["Download(mbs)"]
 
-do_test = ctk.CTkButton(frame, text="Test", command=show_graph)
-do_test.pack(padx=20, pady=(10,0), side="left")
+        self.ax.set_ylabel("Velociade(mbps)")
+        self.ax.set_xlabel("Teste")
 
-graph_file = ctk.CTkButton(frame, text="Save Graph", command=save_graph)
-graph_file.pack(padx=20, pady=(10, 0), side="left")
+        self.ax.set_facecolor('#f5ffff')
+        self.ax.fill_between(x=x, y1=y)
+        self.ax.plot(x, y,  marker='.', linestyle="--", color="purple")
+        self.ax.grid()
 
-page.mainloop()
+        self.canvas.draw()
