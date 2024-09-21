@@ -14,31 +14,46 @@ class AppWindow:
         self.page = CTk()
         self.page.geometry("840x640")
         self.page.title("Wifi Speed Test")
-        self.page.grid_columnconfigure(0, weight=1)
+        self.page.config(bg="#121421")
 
-        fig = Figure(figsize=(4.5, 4.5), facecolor="#f5ffff")
+        self.page.rowconfigure(0, weight=1)
+        self.page.columnconfigure(1, weight=1)
+
+        fig = Figure(figsize=(4.0, 4.0), facecolor="#f5ffff")
         self.ax = fig.add_subplot()
 
         self.canvas = FigureCanvasTkAgg(fig)
-        self.canvas.get_tk_widget().pack(pady=(35,0))
+        self.canvas.get_tk_widget().grid(row=0, column=1, padx=10, pady=10)
 
-        self.main_frame = CTkFrame(self.page, fg_color="transparent", corner_radius=3)
-        self.main_frame.pack(anchor="center",pady=(35,0),padx=40 ,ipadx=10, ipady=20)
+        self.side_frame = CTkFrame(self.page, fg_color="#f2f2f2", corner_radius=3, height=640, width=200)
+        self.side_frame.grid(row=0, column=0, sticky="ns", padx=0, pady=0, ipadx=25)
+        self.side_frame.rowconfigure(1, weight=1)
+        self.side_frame.columnconfigure(0, weight=1)
 
-        self.do_test = CTkButton(self.main_frame, text="Test", fg_color="black", width=40, corner_radius=5, command=self.start_test) #
-        self.do_test.pack(padx=40, pady=(0,0), side="left")
+        self.do_test = CTkButton(self.side_frame, text="Test", fg_color="#583B8A", width=100, corner_radius=5, command=self.start_test)
+        self.do_test.grid(row=1, column=0, pady=(0, 250))
 
-        self.graph_file = CTkButton(self.main_frame, text="Save Graph", fg_color="black", width=40, corner_radius=5) #command=save_graph
-        self.graph_file.pack(padx=20, pady=(0, 0), side="right")
+        self.clear_graph = CTkButton(self.side_frame, text="Clear", fg_color="#583B8A", width=100, corner_radius=5, command=self.clear)
+        self.clear_graph.grid(row=1, column=0, pady=(0, 130))
 
-        self.loading_label = CTkLabel(self.page, text="", fg_color="transparent")
-        self.loading_label.pack(pady=(10, 0))
+        self.cancel_test = CTkButton(self.side_frame, text="Cancel", fg_color="#583B8A", width=100, corner_radius=5)
+        self.cancel_test.grid(row=1, column=0, pady=(0, 0))
+
+        self.save_graph = CTkButton(self.side_frame, text="Save Graph", fg_color="#583B8A", width=100, corner_radius=5)
+        self.save_graph.grid(row=1, column=0, pady=(130, 0))
+
+        self.loading_label = CTkLabel(self.page, text="", fg_color="transparent", bg_color="transparent")
+        self.loading_label.grid(row=0, column=1, pady=(0, 0))
 
         self.page.mainloop()
 
     def start_test(self):
-        self.loading_label.configure(text="Carregando...")
+        self.loading_label.configure(text="Testing...")
         threading.Thread(target=self.show_graph).start()
+
+    def clear(self):
+        self.ax.clear()
+        self.canvas.draw()
 
     def show_graph(self):
         connection_speed()
