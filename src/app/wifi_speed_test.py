@@ -31,14 +31,14 @@ def connection_speed():
             date.append(day)
 
             x += 1
-    except Exception as e:
-        print(e)
+    except Exception:
+        print("Aborting test")
 
     finally:
         return 0
 
 def df_connection_speed():
-    data = {'Download(mbs)': download, 'Upload(mbs)': upload, 'Ping(mbs)': ping, 'Date': date}
+    data = {'Download(mbs) ': download, ' Upload(mbs) ': upload, ' Ping(mbs) ': ping, ' Date ': date}
     df_data = pd.DataFrame(data)
 
     return df_data
