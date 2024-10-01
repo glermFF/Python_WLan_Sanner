@@ -18,18 +18,24 @@ def connection_speed():
     '''Collect internet speed data'''
 
     x = 0
-    while x < 5:
-        temp_download = '{:.2f}'.format(stest.download() / 10 ** 6)
-        temp_upload = '{:.2f}'.format(stest.upload() / 10 ** 6)
-        st_ping = '{:.2f}'.format(stest.results.ping)
-        day = datetime.date.today()
+    try:
+        while x < 5:
+            temp_download = '{:.2f}'.format(stest.download() / 10 ** 6)
+            temp_upload = '{:.2f}'.format(stest.upload() / 10 ** 6)
+            st_ping = '{:.2f}'.format(stest.results.ping)
+            day = datetime.date.today()
 
-        download.append(temp_download)
-        upload.append(temp_upload)
-        ping.append(st_ping)
-        date.append(day)
+            download.append(temp_download)
+            upload.append(temp_upload)
+            ping.append(st_ping)
+            date.append(day)
 
-        x += 1
+            x += 1
+    except Exception as e:
+        print(e)
+
+    finally:
+        return 0
 
 def df_connection_speed():
     data = {'Download(mbs)': download, 'Upload(mbs)': upload, 'Ping(mbs)': ping, 'Date': date}
