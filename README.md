@@ -1,7 +1,7 @@
 ![Static Badge](https://img.shields.io/badge/Em%20Desenvolvimento-maker?style=for-the-badge&color=orange)
 
 <div align="center">
-  <h1> Wifi-Speed-Test </h1>
+  <h1> Swosh Scan </h1>
 </div>
 <br>
 
