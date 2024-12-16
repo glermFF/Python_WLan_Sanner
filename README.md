@@ -1,7 +1,7 @@
 ![Static Badge](https://img.shields.io/badge/Em%20Desenvolvimento-maker?style=for-the-badge&color=orange)
 
 <div align="center">
-  <h1> Swosh Scan </h1>
+  <h1> WLan Scanner </h1>
 </div>
 <br>
 
